@@ -244,7 +244,7 @@ class _UserManagementState extends State<UserManagement> {
         ),
         SizedBox(
           height: DimensionsConstants.d50.h,
-          width: DimensionsConstants.d210.w,
+          width: DimensionsConstants.d384.w,
           child: NumberPaginator(
             numberPages: provider.numberOfPages,
             initialPage: provider.currentPage,

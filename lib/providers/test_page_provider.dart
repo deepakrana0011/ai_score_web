@@ -66,6 +66,22 @@ class TestPageProvider extends BaseProvider {
   Timer? timer;
 
   bool data = false;
+  bool buttonActivity = false;
+  updateButtonActivity(){
+
+    buttonActivity = true;
+    notifyListeners();
+
+
+  }
+  updateButtonActivityToFalse(){
+
+    buttonActivity = false;
+    notifyListeners();
+
+
+  }
+
 
   updateData(bool val) {
     data = val;
@@ -154,9 +170,9 @@ class TestPageProvider extends BaseProvider {
       var model = await api.addScores(category, time, students, image, token);
       if (model.success == true) {
         updateUploadVideo(false);
-        DialogHelper.showMessage(context, model.message);
+
       } else {
-        DialogHelper.showMessage(context, model.message);
+
         updateUploadVideo(false);
       }
       updateUploadVideo(false);
@@ -183,6 +199,7 @@ class TestPageProvider extends BaseProvider {
     ];
     try {
       print("Inside AddScorePose30 Api");
+      print("${time}""++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
       var model = await api.addScoresPose30(context, token, time, modelDataList, studentIdList);
       if (model.success == true) {
         DialogHelper.showMessage(context, "Api hit Successfully AddScorePose 30");
@@ -223,8 +240,7 @@ class TestPageProvider extends BaseProvider {
       print("size of file is ${value}");*/
       var model = await api.uploadVideo(token, videoFile);
       print("upload video url ${model.data}");
-      if (model.success == true) {
-        await poseCompare(context, categoryDropDownValueId!, model.data!);
+      if (model.success == true) {await poseCompare(context, categoryDropDownValueId!, model.data!);
         minuteCount = 0;
         secondsCount =0;
         updateUploadVideo(false);
@@ -257,22 +273,23 @@ class TestPageProvider extends BaseProvider {
     updateUploadVideo(true);
     try {
       if (scoreId == "9.1") {
-        print(secondsCount.toString());
         var model = await api.poseCompareTotalScore(videoUrl);
         if (model.status == true) {
-          await addScoresPose30(context, int.parse(minuteCount == 1 ? (secondsCount + 60).toString() : (minuteCount == 2 ? (120).toString() : secondsCount.toString())), model.data);
+          await addScoresPose30(context, int.parse(minuteCount == 1 ? (secondsCount + 60).toString() : (minuteCount == 2 ? (secondsCount + 120).toString() : secondsCount.toString())), model.data);
           secondsCount = 0;
           minuteCount = 0;
           updateUploadVideo(false);
         } else {
-          DialogHelper.showMessage(context, "something_went_wrong_try".tr());
+
           updateUploadVideo(false);
+
         }
+        updateUploadVideo(false);
       } else {
         var model = await api.poseCompare(scoreId, videoUrl);
         if (model.status == true) {
           aiScoreList = model.data!.scores!;
-          print("time is ${secondsCount} : ${minuteCount}");
+
           await addScores(
               context,
               categoryDropDownValueId!,
@@ -324,8 +341,7 @@ class TestPageProvider extends BaseProvider {
       updateUploadVideo(false);
       return false;
     } on SocketException catch (c) {
-      print(
-          "SocketException------------------------------------------------------");
+      print("SocketException------------------------------------------------------");
       updateUploadVideo(false);
       DialogHelper.showMessage(context, 'internet_connection'.tr());
       return false;

@@ -500,16 +500,17 @@ class _TestPageState extends State<TestPage>
                         : Column(
                             children: [
                               GestureDetector(
-                                  onTap: controller != null &&
+                                  onTap: provider.buttonActivity == false ? controller != null &&
                                           controller!.value.isInitialized &&
                                           !controller!.value.isRecordingVideo &&
                                           SharedPref.prefs!.getString(SharedPref.userType) == "Teacher"
                                       ? onVideoRecordButtonPressed
-                                      : onVideoRecordButtonPressedStudent,
-                                  child: startFinishBtn("start".tr())),
+                                      : onVideoRecordButtonPressedStudent : null,
+                                  child: startFinishBtn("start".tr(),provider.buttonActivity == false ? ColorConstants.primaryColor: ColorConstants.colorA1A1A1)),
                               SizedBox(height: DimensionsConstants.d10.h),
                               GestureDetector(
                                   onTap:
+
                                       //                   (){
                                       //                 provider.addScores(context, provider.categoryDropDownValueId!, "45", [Students(studentId: provider.studentId1), Students(studentId: provider.studentId2), Students(studentId: provider.studentId3),
                                       //                   Students(studentId: provider.studentId4), Students(studentId: provider.studentId5)]);
@@ -519,7 +520,7 @@ class _TestPageState extends State<TestPage>
                                               controller!.value.isRecordingVideo
                                           ? onStopButtonPressed
                                           : null,
-                                  child: startFinishBtn("finish".tr())),
+                                  child: startFinishBtn("finish".tr(),ColorConstants.primaryColor)),
                               SizedBox(height: DimensionsConstants.d10.h),
                             ],
                           ),
@@ -662,13 +663,13 @@ class _TestPageState extends State<TestPage>
     );
   }
 
-  Widget startFinishBtn(String text) {
+  Widget startFinishBtn(String text, Color color) {
     return Container(
       alignment: Alignment.center,
       height: DimensionsConstants.d50.h,
       width: DimensionsConstants.d201.w,
       decoration: BoxDecoration(
-        color: ColorConstants.primaryColor,
+        color: color,
         borderRadius:
             BorderRadius.all(Radius.circular(DimensionsConstants.d3.r)),
       ),
@@ -715,22 +716,22 @@ class _TestPageState extends State<TestPage>
           provider?.secondsCount = 0;
           provider?.minuteCount = 1;
         } else if (provider?.secondsCount == 38 && provider?.minuteCount == 2) {
-          DialogHelper.showMessage(
-              context, "Sorry, Video record cannot be more than 2 minutes.");
-          stopVideoRecording().then((XFile? file) async {
+          /*DialogHelper.showMessage(
+              context, "Sorry, Video record cannot be more than 2 minutes.");*/
+          /*stopVideoRecording().then((XFile? file) async {
             if (mounted) {
               provider?.updateData(true);
             }
             if (file != null) {
-              provider?.secondsCount = 0;
-              provider?.minuteCount = 0;
               provider?.timer?.cancel();
               SharedPref.prefs!.getString(SharedPref.userType) == "Teacher"
                   ? await provider?.uploadVideo(context, file)
                   : await provider!.uploadVideoStudent(context, file);
+              // provider?.secondsCount = 0;
+              // provider?.minuteCount = 0;
             }
           });
-          timer.cancel();
+          timer.cancel();*/
         }
         provider?.updateData(true);
       },
@@ -1003,6 +1004,7 @@ class _TestPageState extends State<TestPage>
   }
 
   void onVideoRecordButtonPressed() {
+    provider!.updateButtonActivity();
 
     if (provider?.categoryDropDownValueId == null ||
         provider?.categoryDropDownValueId == "null") {
@@ -1016,7 +1018,7 @@ class _TestPageState extends State<TestPage>
     } else {
       //  DialogHelper.showMessage(context, "okkkk");
       startVideoRecording().then((_) {
-        if (mounted) {
+        if (mounted ) {
           twoMinTimer();
           provider?.updateData(true);
         }
@@ -1025,13 +1027,14 @@ class _TestPageState extends State<TestPage>
   }
 
   void onVideoRecordButtonPressedStudent() {
+    provider!.updateButtonActivity();
     if (provider?.categoryDropDownValueId == null ||
         provider?.categoryDropDownValueId == "null") {
       DialogHelper.showMessage(context, "choose_category_first".tr());
     } else {
       //  DialogHelper.showMessage(context, "okkkk");
       startVideoRecording().then((_) {
-        if (mounted) {
+        if (mounted ) {
           twoMinTimer();
           provider?.updateData(true);
         }
@@ -1040,6 +1043,8 @@ class _TestPageState extends State<TestPage>
   }
 
   void onStopButtonPressed() {
+    provider!.updateButtonActivityToFalse();
+
     stopVideoRecording().then((XFile? file) async {
       if (mounted) {
         provider?.updateData(true);

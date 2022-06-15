@@ -184,17 +184,22 @@ class Api {
         for (int k = 0; k < modelDataList[i].scores.length; k++) {
           var student = StudentDetail();
           student.studentId = studentIdList[k];
-          student.score = modelDataList[i].scores[k];
+          if(modelDataList[i].scores == 0){
+
+            student.score = 0;
+          }else{
+            student.score = modelDataList[i].scores[k];
+          }
+
           studentList.add(student);
         }
         studentData.student = studentList;
         categoryData.add(studentData);
       }
-      var jsonEncoded =
-          jsonEncode(categoryData.map((e) => e.toJson()).toList());
+      var jsonEncoded = jsonEncode(categoryData.map((e) => e.toJson()).toList());
       var map2 = {"data": jsonEncoded};
       map1.addAll(map2);
-      print("data is hitting ${map1}");
+      print("data is hitting $map1");
       var response = await dio.post(ApiConstants.baseUrl + ApiConstants.addScorePose30, data: map1);
       DialogHelper.showMessage(context, "After hit the AddScoreApi");
       print("api hit successfully");
@@ -224,9 +229,7 @@ class Api {
       } else {
         map = {"page": pageCount};
       }
-      var response = await dio.get(
-          ApiConstants.baseUrl + ApiConstants.getScores,
-          queryParameters: map);
+      var response = await dio.get(ApiConstants.baseUrl + ApiConstants.getScores, queryParameters: map);
       return GetScoreResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e)  {
       if (e.response != null) {
