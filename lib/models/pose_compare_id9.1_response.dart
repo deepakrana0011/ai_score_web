@@ -59,16 +59,19 @@ class CategoryDetail {
     required this.category,
     required this.image,
     required this.scores,
+    required this.score
   });
 
   String category;
   String image;
   List<double> scores;
+  int? score;
 
   factory CategoryDetail.fromJson(Map<String, dynamic> json) => CategoryDetail(
     category: json["category"],
     image: json["image"],
-    scores: List<double>.from(json["scores"].map((x) => x.toDouble())),
+    scores: json["scores"] == 0 ? [] : List<double>.from(json["scores"].map((x) => x.toDouble())),
+    score : json["scores"] ?? null
   );
 
   Map<String, dynamic> toJson() => {

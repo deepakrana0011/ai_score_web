@@ -171,7 +171,7 @@ class Api {
       var time,
       List<CategoryDetail> modelDataList,
       List<String?> studentIdList) async {
-    DialogHelper.showMessage(context, "yaay inside add score pose 30");
+    print("yaay inside add score pose 30");
     try {
       dio.options.headers["Authorization"] = "Bearer $token";
       var map1 = <String, dynamic>{"time": time};
@@ -181,27 +181,34 @@ class Api {
         studentData.category = modelDataList[i].category;
         studentData.image = modelDataList[i].image;
         List<StudentDetail> studentList = [];
-        for (int k = 0; k < modelDataList[i].scores.length; k++) {
-          var student = StudentDetail();
-          student.studentId = studentIdList[k];
-          if(modelDataList[i].scores == 0){
-
+        if (modelDataList[i].scores.isEmpty) {
+          for (var element in studentIdList) {
+            var student = StudentDetail();
             student.score = 0;
-          }else{
-            student.score = modelDataList[i].scores[k];
+            student.studentId = element;
+            studentList.add(student);
           }
-
-          studentList.add(student);
+          studentData.student = studentList;
+          categoryData.add(studentData);
+        } else {
+          for (int k = 0; k < modelDataList[i].scores.length; k++) {
+            var student = StudentDetail();
+            student.score = modelDataList[i].scores[k];
+            student.studentId = studentIdList[k];
+            studentList.add(student);
+          }
+          studentData.student = studentList;
+          categoryData.add(studentData);
         }
-        studentData.student = studentList;
-        categoryData.add(studentData);
       }
-      var jsonEncoded = jsonEncode(categoryData.map((e) => e.toJson()).toList());
+      var jsonEncoded =
+          jsonEncode(categoryData.map((e) => e.toJson()).toList());
       var map2 = {"data": jsonEncoded};
       map1.addAll(map2);
       print("data is hitting $map1");
-      var response = await dio.post(ApiConstants.baseUrl + ApiConstants.addScorePose30, data: map1);
-      DialogHelper.showMessage(context, "After hit the AddScoreApi");
+      var response = await dio
+          .post(ApiConstants.baseUrl + ApiConstants.addScorePose30, data: map1);
+      // DialogHelper.showMessage(context, "After hit the AddScoreApi");
       print("api hit successfully");
       return AddScorePose30Response.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
@@ -229,9 +236,11 @@ class Api {
       } else {
         map = {"page": pageCount};
       }
-      var response = await dio.get(ApiConstants.baseUrl + ApiConstants.getScores, queryParameters: map);
+      var response = await dio.get(
+          ApiConstants.baseUrl + ApiConstants.getScores,
+          queryParameters: map);
       return GetScoreResponse.fromJson(json.decode(response.toString()));
-    } on DioError catch (e)  {
+    } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
         var errorMessage = errorData["message"];
@@ -346,7 +355,9 @@ class Api {
   Future<PoseCompareResponse30> poseCompareTotalScore(String videoUrl) async {
     try {
       var map = <String, dynamic>{"videoUrl": "https://m.vanasy.cn:8080/" +videoUrl};
-      var response = await dio.get(ApiConstants.aiPoseCompareId30, queryParameters: map);
+      //var map = <String, dynamic>{"videoUrl": videoUrl};
+      var response =
+          await dio.get(ApiConstants.aiPoseCompareId30, queryParameters: map);
       print("jit pose compare successfully");
       return PoseCompareResponse30.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {

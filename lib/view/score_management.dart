@@ -218,7 +218,7 @@ class _ScoreManagementState extends State<ScoreManagement> {
                 provider.updateS == true)
                 ? Container():SizedBox(
               height: DimensionsConstants.d50.h,
-              width: DimensionsConstants.d384.w,
+              width: DimensionsConstants.d526.w,
               child: NumberPaginator(
                 numberPages: provider.numberOfPages,
                 initialPage: provider.currentPage,

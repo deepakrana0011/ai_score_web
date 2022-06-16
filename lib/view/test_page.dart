@@ -34,14 +34,8 @@ class TestPage extends StatefulWidget {
   _TestPageState createState() => _TestPageState();
 }
 
-class _TestPageState extends State<TestPage>
-    with WidgetsBindingObserver, TickerProviderStateMixin {
-  // var dropDownItems =  ["${"student".tr()} 1","${"student".tr()} 2","${"student".tr()} 3","${"student".tr()} 4","${"student".tr()} 5"];
-  //
-  // String categoryValue = "category".tr();
-  // var categoryDropDownItems = ["category".tr(), "smile".tr(), "bow_15".tr(), "bow_30".tr(), "bow_45".tr(), "welcome".tr(), "to_put".tr(), "slip".tr(), "fasten".tr(),
-  //   "inflation".tr(),  "pull".tr(), "blow".tr(), "located".tr(), "drop".tr(), "over".tr(), "seat_belt".tr(),
-  //    "insert".tr(), "tightly".tr(), "to_unfasten".tr(), "lift".tr(), "front".tr(), "middle".tr(), "rear".tr(), "light".tr(), "for".tr(), "thank_you".tr()];
+class _TestPageState extends State<TestPage> with WidgetsBindingObserver, TickerProviderStateMixin {
+
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -50,6 +44,7 @@ class _TestPageState extends State<TestPage>
   @override
   void dispose() {
     controller?.dispose();
+    provider!.stopPlayer();
     super.dispose();
   }
 
@@ -144,7 +139,7 @@ class _TestPageState extends State<TestPage>
                                                 .map((Data items) {
                                               return DropdownMenuItem(
                                                 onTap: () {
-                                                  provider.studentId1 = (items.id == "select_student1".tr() ? null : items.id);
+                                                  provider.studentId1 = (items.id == "select_student1".tr()? null : items.id);
                                                 },
                                                 value: items.id.toString(),
                                                 child: Text(items.studentName ==
@@ -164,7 +159,8 @@ class _TestPageState extends State<TestPage>
                                               );
                                             }).toList(),
                                             onChanged: (String? newValue) {
-                                              provider.studentDropDown1 = newValue!;
+                                              provider.studentDropDown1 =
+                                                  newValue!;
                                               provider.updateData(true);
                                             }),
                                       ),
@@ -429,8 +425,7 @@ class _TestPageState extends State<TestPage>
                                     SizedBox(width: DimensionsConstants.d5.w),
                                     provider.aiScoreList.isEmpty
                                         ? scoreContainer("")
-                                        : scoreContainer(
-                                            provider.aiScoreList[0].toString()),
+                                        : scoreContainer(provider.aiScoreList[0].toString()),
                                     provider.aiScoreList.length != 2
                                         ? scoreContainer("")
                                         : scoreContainer(
@@ -460,7 +455,7 @@ class _TestPageState extends State<TestPage>
                               ? Center(
                                   heightFactor: DimensionsConstants.d20.h,
                                   widthFactor: DimensionsConstants.d20.w,
-                                  child: CircularProgressIndicator())
+                                  child: const CircularProgressIndicator())
                               : SharedPref.prefs!
                                           .getString(SharedPref.userType) ==
                                       "Teacher"
@@ -500,13 +495,22 @@ class _TestPageState extends State<TestPage>
                         : Column(
                             children: [
                               GestureDetector(
-                                  onTap: provider.buttonActivity == false ? controller != null &&
-                                          controller!.value.isInitialized &&
-                                          !controller!.value.isRecordingVideo &&
-                                          SharedPref.prefs!.getString(SharedPref.userType) == "Teacher"
-                                      ? onVideoRecordButtonPressed
-                                      : onVideoRecordButtonPressedStudent : null,
-                                  child: startFinishBtn("start".tr(),provider.buttonActivity == false ? ColorConstants.primaryColor: ColorConstants.colorA1A1A1)),
+                                  onTap: provider.buttonActivity == false
+                                      ? controller != null &&
+                                              controller!.value.isInitialized &&
+                                              !controller!
+                                                  .value.isRecordingVideo &&
+                                              SharedPref.prefs!.getString(
+                                                      SharedPref.userType) ==
+                                                  "Teacher"
+                                          ? onVideoRecordButtonPressed
+                                          : onVideoRecordButtonPressedStudent
+                                      : null,
+                                  child: startFinishBtn(
+                                      "start".tr(),
+                                      provider.buttonActivity == false
+                                          ? ColorConstants.primaryColor
+                                          : ColorConstants.colorA1A1A1)),
                               SizedBox(height: DimensionsConstants.d10.h),
                               GestureDetector(
                                   onTap:
@@ -520,7 +524,8 @@ class _TestPageState extends State<TestPage>
                                               controller!.value.isRecordingVideo
                                           ? onStopButtonPressed
                                           : null,
-                                  child: startFinishBtn("finish".tr(),ColorConstants.primaryColor)),
+                                  child: startFinishBtn("finish".tr(),
+                                      ColorConstants.primaryColor)),
                               SizedBox(height: DimensionsConstants.d10.h),
                             ],
                           ),
@@ -633,8 +638,13 @@ class _TestPageState extends State<TestPage>
                 items: provider?.categoryList.toSet().map((CategoryList items) {
                   return DropdownMenuItem(
                     onTap: () {
-                      provider?.categoryDropDownValueId = items.categoryNumber.toString();
-                    SharedPref.prefs!.getString(SharedPref.userType) == "Teacher" ? null: provider!.getLastScoreData(context, items.categoryNumber.toString());
+                      provider?.categoryDropDownValueId =
+                          items.categoryNumber.toString();
+                      SharedPref.prefs!.getString(SharedPref.userType) ==
+                              "Teacher"
+                          ? null
+                          : provider!.getLastScoreData(
+                              context, items.categoryNumber.toString());
                     },
                     value: items.categoryName,
                     child: Text(items.categoryName.toString()).semiBoldText(
@@ -1004,7 +1014,7 @@ class _TestPageState extends State<TestPage>
   }
 
   void onVideoRecordButtonPressed() {
-    provider!.updateButtonActivity();
+
 
     if (provider?.categoryDropDownValueId == null ||
         provider?.categoryDropDownValueId == "null") {
@@ -1016,9 +1026,10 @@ class _TestPageState extends State<TestPage>
         provider?.studentId5 == null) {
       DialogHelper.showMessage(context, "please_select_student".tr());
     } else {
+      provider!.updateButtonActivity();
       //  DialogHelper.showMessage(context, "okkkk");
       startVideoRecording().then((_) {
-        if (mounted ) {
+        if (mounted) {
           twoMinTimer();
           provider?.updateData(true);
         }
@@ -1027,14 +1038,15 @@ class _TestPageState extends State<TestPage>
   }
 
   void onVideoRecordButtonPressedStudent() {
-    provider!.updateButtonActivity();
+
     if (provider?.categoryDropDownValueId == null ||
         provider?.categoryDropDownValueId == "null") {
       DialogHelper.showMessage(context, "choose_category_first".tr());
     } else {
       //  DialogHelper.showMessage(context, "okkkk");
+      provider!.updateButtonActivity();
       startVideoRecording().then((_) {
-        if (mounted ) {
+        if (mounted) {
           twoMinTimer();
           provider?.updateData(true);
         }
@@ -1051,10 +1063,10 @@ class _TestPageState extends State<TestPage>
       }
       if (file != null) {
         provider?.timer?.cancel();
-        SharedPref.prefs!.getString(SharedPref.userType) == "Teacher" ? await provider?.uploadVideo(context, file) : await provider!.uploadVideoStudent(context, file);
-
+        SharedPref.prefs!.getString(SharedPref.userType) == "Teacher"
+            ? await provider?.uploadVideo(context, file)
+            : await provider!.uploadVideoStudent(context, file);
       }
-
     });
   }
 
@@ -1097,10 +1109,9 @@ class _TestPageState extends State<TestPage>
 
   Future<void> startVideoRecording() async {
     final CameraController? cameraController = controller;
-    if(provider!.categoryDropDownValueId == "9.1"){
+    if (provider!.categoryDropDownValueId == "9.1") {
       provider!.startThePlayer();
-    }else{}
-
+    } else {}
 
     if (cameraController == null || !cameraController.value.isInitialized) {
       showInSnackBar('Error: select a camera first.');
@@ -1262,9 +1273,7 @@ Widget roundForStudent(TestPageProvider provider) {
           SizedBox(
             height: DimensionsConstants.d5.h,
           ),
-          Text(provider.round == null
-                  ? "0"
-                  : provider.round.toString())
+          Text(provider.round == null ? "0" : provider.round.toString())
               .boldText(ColorConstants.primaryColor, DimensionsConstants.d25.h,
                   TextAlign.left),
         ],
