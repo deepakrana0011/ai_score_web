@@ -24,7 +24,7 @@ void setupLocator() {
   locator.registerLazySingleton<Dio>(() {
     Dio dio =  Dio();
     //dio.interceptors.add(AppInterceptors(dio));
-    dio.interceptors.add(LogInterceptor(requestBody: false, responseBody: true, request: true, requestHeader: true, responseHeader: false, error: true));
+   // dio.interceptors.add(LogInterceptor(requestBody: false, responseBody: true, request: true, requestHeader: true, responseHeader: false, error: true));
     return dio;
   });
 }

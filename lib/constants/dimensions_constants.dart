@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 class DimensionsConstants {
   static const double mockupWidth = 1440;
   static const double mockupHeight = 1024;
+  static const double d1210 = 1210;
+  static const double d120 = 120;
+  static const double d1000 = 1000;
   static const double d1 = 1;
   static const double dOneHalf = 1.5;
   static const double d2 = 2;

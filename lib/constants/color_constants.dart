@@ -11,4 +11,5 @@ class ColorConstants {
   static var color6F6C99 = const Color(0xFF6F6C99);
   static var colorA1A1A1 = const Color(0xFFA1A1A1);
   static var color1A0DAB = const Color(0xFF1A0DAB);
+  static var grayColor = const Color(0xFFC8C8C8);
 }

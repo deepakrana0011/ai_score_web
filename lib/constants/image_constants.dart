@@ -12,4 +12,5 @@ class ImageConstants {
   static const smallArrowDown = "$mainImagePath/ic_smallArrowDown.svg";
   static const datePickerIcon = "$mainImagePath/ic_datePicker.svg";
   static const clockIcon = "$mainImagePath/ic_clock.png";
+  static const loginNewImage = "$mainImagePath/loginNewImage.jpeg";
 }
